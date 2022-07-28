@@ -1,3 +1,13 @@
+/*
+ * @Descripttion: 登录注册表单验证规则
+ * @version: 
+ * @Author: likeorange
+ * @Date: 2022-07-25 20:50:01
+ * @LastEditors: likeorange
+ * @LastEditTime: 2022-07-26 16:11:51
+ */
+
+//定义验证规则
 const joi = require('joi')
 
 /**
