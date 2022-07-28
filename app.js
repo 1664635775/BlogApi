@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-07-25 20:50:01
  * @LastEditors: likeorange
- * @LastEditTime: 2022-07-28 21:49:31
+ * @LastEditTime: 2022-07-29 00:00:52
  */
 const express = require('express')
 const app = express()
@@ -16,6 +16,15 @@ app.use(cors())
 //数据格式处理
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
+
+//导入session
+const session = require('express-session')
+app.use(session({
+  secret:'passwordlikeorange',
+  resave:true,
+  saveUninitialized:true,
+  // cookie: {maxAge: 60000},
+}))
 
 
 // 用户登录注册路由
@@ -29,6 +38,7 @@ app.use(userInfoRouter)
 //图片(文件)处理路由
 const fileProcessRouter = require('./router/fileProcess.js')
 app.use('/file',fileProcessRouter)
+
 
 //数据验证
 const joi = require('joi')

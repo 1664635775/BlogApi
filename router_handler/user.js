@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-07-25 20:50:01
  * @LastEditors: likeorange
- * @LastEditTime: 2022-07-27 15:51:31
+ * @LastEditTime: 2022-07-28 23:57:36
  */
 
 const db = require('../db/index.js')
@@ -92,7 +92,10 @@ exports.login = (req, res) => {
         delete jsonData.is_disable
         jsonData.createTime = jsonData.create_time
         delete jsonData.create_time
-        const sql1 = 'select * from user where username=?'
+        // const sql1 = 'select * from user where username=?'
+        req.session.userInfo = jsonData
+        req.session.isLogin = true
+        console.log(req.session);
         return res.send({code:0,msg:'登录成功',data:{...jsonData}})
       }
     }
