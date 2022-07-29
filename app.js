@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-07-25 20:50:01
  * @LastEditors: likeorange
- * @LastEditTime: 2022-07-29 00:41:57
+ * @LastEditTime: 2022-07-29 20:29:11
  */
 const express = require('express')
 const app = express()
@@ -21,8 +21,8 @@ app.use(express.json())
 const session = require('express-session')
 app.use(session({
   secret:'passwordlikeorange',
-  resave:true,
-  saveUninitialized:true,
+  resave:false,
+  saveUninitialized:false,
   cookie: {maxAge: 604800000},
 }))
 
@@ -47,8 +47,8 @@ app.use(function (err, req, res, next) {
   // 数据验证失败
   if (err instanceof joi.ValidationError) return res.send(err)
   // 未知错误
-  console.log(req.body);
-  console.log(err);
+  // console.log(req.body);
+  // console.log(err);
   res.send({code:0,msg:err.message})
 })
 

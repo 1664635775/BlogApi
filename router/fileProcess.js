@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-07-28 19:57:50
  * @LastEditors: likeorange
- * @LastEditTime: 2022-07-28 21:42:19
+ * @LastEditTime: 2022-07-29 20:08:48
  */
 
 const express = require('express')
@@ -17,6 +17,6 @@ const multerConfig = require('../utils/multerConfig.js')
 
 router.post('/upload',multerConfig,fileHandler.upload)
 
-router.post('/download',fileHandler.download)
+router.get('/download',fileHandler.download)
 
 module.exports = router
