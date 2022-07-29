@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-07-25 20:50:01
  * @LastEditors: likeorange
- * @LastEditTime: 2022-07-26 16:13:05
+ * @LastEditTime: 2022-07-29 19:47:38
  */
 
 const express = require('express')
@@ -21,5 +21,7 @@ const { reg_login_schema } = require('../schema/user.js')
 router.post('/register', expressJoi(reg_login_schema), userHandler.register)
 
 router.post('/login', expressJoi(reg_login_schema), userHandler.login)
+
+router.get('/logout', userHandler.logout)
 
 module.exports = router

@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-07-25 20:50:01
  * @LastEditors: likeorange
- * @LastEditTime: 2022-07-28 23:57:36
+ * @LastEditTime: 2022-07-29 19:46:34
  */
 
 const db = require('../db/index.js')
@@ -27,15 +27,15 @@ exports.register = (req, res) => {
   const userInfo = req.body
   console.log(userInfo);
   if (!userInfo.username || !userInfo.password) {
-    return res.send({ code: 1, msg: '用户名或密码不合法' })
+    return res.send({ code: 0, msg: '用户名或密码不合法' })
   }
   const sql = `select * from user where username=?`
   db.query(sql, [userInfo.username], function (err, results) {
     if (err) {
-      return res.send({ code: 1, msg: err.msg })
+      return res.send({ code: 0, msg: err.msg })
     }
     if (results.length > 0) {
-      return res.send({ code: 1, msg: '用户名被占用，请更换其他用户名！' })
+      return res.send({ code: 0, msg: '用户名被占用，请更换其他用户名！' })
     }
 
     //加盐加密用户密码
@@ -51,14 +51,14 @@ exports.register = (req, res) => {
     db.query(sqlInsert, {id: id, username: userInfo.username, password: userInfo.password, create_time:date}, function (err, results) {
       if (err) {
         console.log(err);
-        return res.send({ code: 1, msg: '注册失败' })
+        return res.send({ code: 0, msg: '注册失败' })
       }
       if (results.affectedRows !== 1) {
         console.log(results);
-        return res.send({ code: 1, msg: '注册用户失败，请稍后再试！' })
+        return res.send({ code: 0, msg: '注册用户失败，请稍后再试！' })
       }
       
-      res.send({code:0, msg:'注册成功'})
+      res.send({code:1, msg:'注册成功'})
   })
   })
 
@@ -73,34 +73,45 @@ exports.register = (req, res) => {
  */
 exports.login = (req, res) => {
   const userInfo = req.body
-  console.log(userInfo);
+  console.log(req.session);
   const sql = `select * from user where username=?`
   db.query(sql,userInfo.username, function (err,results) {
     if(err){
-      return res.send({code:1, msg:err.msg})
+      return res.send({code:0, msg:err.msg})
     }
     if(results.length > 0){
       //对比加盐加密后password是否一致
       const compareResult = bcrypt.compareSync(userInfo.password,results[0].password)
       if (!compareResult) {
         console.log(results[0]);
-        return res.send({code:1,msg:'用户名或密码不存在'})
+        return res.send({code:0,msg:'用户名或密码不存在'})
       }
       else{
         jsonData = results[0]
         delete jsonData.is_admin
         delete jsonData.is_disable
+        delete jsonData.password
         jsonData.createTime = jsonData.create_time
         delete jsonData.create_time
         // const sql1 = 'select * from user where username=?'
         req.session.userInfo = jsonData
         req.session.isLogin = true
-        console.log(req.session);
-        return res.send({code:0,msg:'登录成功',data:{...jsonData}})
+        console.log(req.session.id);
+        return res.send({code:1,msg:'登录成功',data:{...jsonData}})
       }
     }
     else{
-      return res.send({code:1,msg:'用户不存在'})
+      return res.send({code:0,msg:'用户名不存在'})
     }
   })
+}
+
+/**
+ * @name: logout
+ * @msg: 
+ * @return {*}
+ */
+exports.logout = (req, res) => {
+  req.session.destroy()
+  res.send({code: 1, msg: "登出成功！"})
 }

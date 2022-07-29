@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-07-25 20:50:01
  * @LastEditors: likeorange
- * @LastEditTime: 2022-07-29 00:00:52
+ * @LastEditTime: 2022-07-29 00:41:57
  */
 const express = require('express')
 const app = express()
@@ -23,7 +23,7 @@ app.use(session({
   secret:'passwordlikeorange',
   resave:true,
   saveUninitialized:true,
-  // cookie: {maxAge: 60000},
+  cookie: {maxAge: 604800000},
 }))
 
 
@@ -49,7 +49,7 @@ app.use(function (err, req, res, next) {
   // 未知错误
   console.log(req.body);
   console.log(err);
-  res.send({msg:err.message})
+  res.send({code:0,msg:err.message})
 })
 
 
