@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-07-25 20:50:01
  * @LastEditors: likeorange
- * @LastEditTime: 2022-07-29 19:46:34
+ * @LastEditTime: 2022-07-30 20:49:24
  */
 
 const db = require('../db/index.js')
@@ -25,7 +25,7 @@ const moment = require('moment')
  */
 exports.register = (req, res) => {
   const userInfo = req.body
-  console.log(userInfo);
+  // console.log(userInfo);
   if (!userInfo.username || !userInfo.password) {
     return res.send({ code: 0, msg: '用户名或密码不合法' })
   }
@@ -73,7 +73,7 @@ exports.register = (req, res) => {
  */
 exports.login = (req, res) => {
   const userInfo = req.body
-  console.log(req.session);
+  // console.log(req.session);
   const sql = `select * from user where username=?`
   db.query(sql,userInfo.username, function (err,results) {
     if(err){
@@ -83,7 +83,7 @@ exports.login = (req, res) => {
       //对比加盐加密后password是否一致
       const compareResult = bcrypt.compareSync(userInfo.password,results[0].password)
       if (!compareResult) {
-        console.log(results[0]);
+        // console.log(results[0]);
         return res.send({code:0,msg:'用户名或密码不存在'})
       }
       else{
@@ -96,7 +96,7 @@ exports.login = (req, res) => {
         // const sql1 = 'select * from user where username=?'
         req.session.userInfo = jsonData
         req.session.isLogin = true
-        console.log(req.session.id);
+        // console.log(req.session.id);
         return res.send({code:1,msg:'登录成功',data:{...jsonData}})
       }
     }

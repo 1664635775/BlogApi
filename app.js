@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-07-25 20:50:01
  * @LastEditors: likeorange
- * @LastEditTime: 2022-07-30 17:32:33
+ * @LastEditTime: 2022-07-30 20:50:46
  */
 const express = require('express')
 const app = express()
@@ -33,7 +33,7 @@ app.use('/user',userRouter)
 
 // 用户个人信息路由
 const userInfoRouter = require('./router/userInfo.js')
-app.use(userInfoRouter)
+app.use('/user',userInfoRouter)
 
 //图片(文件)处理路由
 const fileProcessRouter = require('./router/fileProcess.js')

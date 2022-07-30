@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-07-28 19:59:27
  * @LastEditors: likeorange
- * @LastEditTime: 2022-07-29 20:41:02
+ * @LastEditTime: 2022-07-30 22:32:28
  */
 const db = require('../db/index.js')
 
@@ -26,7 +26,9 @@ exports.upload = (req, res) => {
 
 }
 exports.download = (req, res) => {
-  console.log(req.session);
+  if(req.query.name){
+    return res.download(__dirname +'../../public/img/'+req.query.name)
+  }
   if(req.session.isLogin){
     return res.download(__dirname +'../../public/img/'+req.session.userInfo.icon)
   }

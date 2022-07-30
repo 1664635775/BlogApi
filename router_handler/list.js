@@ -4,15 +4,18 @@
  * @Author: likeorange
  * @Date: 2022-07-29 22:19:15
  * @LastEditors: likeorange
- * @LastEditTime: 2022-07-30 19:53:05
+ * @LastEditTime: 2022-07-30 20:39:48
  */
 
 var async = require('async')
 const db = require('../db/index.js')
 exports.getList = (req, res) => {
-  console.log(req.query);
-  let total = {}
-  const sql = `select article.id,user_id,content,category_id,name,create_time,update_time,article_hot from article limit ?,?`
+  // console.log(req.query);
+  let total = 0
+  let sql = `select article.id,user_id,content,category_id,name,create_time,update_time,article_hot from article limit ?,?`
+  if (req.query.userId) {
+    sql = `select article.id,user_id,content,category_id,name,create_time,update_time,article_hot from article where article.user_id = ${req.query.userId} limit ?,?`
+  }
   db.query(sql, [parseInt((req.query.page - 1) * req.query.pageSize), parseInt(req.query.pageSize)], (err, rows) => {
     if (err) {
       return res.send({ code: 0, msg: '服务器端错误' })
@@ -28,7 +31,7 @@ exports.getList = (req, res) => {
       db.query(sqlTag, item.id, (err, tags) => {
         if (err) return res.send({ code: 0, msg: '服务器端错误' });
         item.tags = tags[0]
-        total = JSON.parse(JSON.stringify(tags[1]))
+        total = tags[1][0].total
         callback(null, item)
       });
     }, function (err, results) {
@@ -45,7 +48,7 @@ exports.getList = (req, res) => {
         data.updateTime = data.update_time
         delete data.update_time
       }
-      return res.send({ code: 1, data: { records: results, total: total[0].total } })
+      return res.send({ code: 1, data: { records: results, total: total } })
     });
   })
 
