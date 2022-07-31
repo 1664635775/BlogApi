@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-07-25 20:50:01
  * @LastEditors: likeorange
- * @LastEditTime: 2022-07-30 20:50:46
+ * @LastEditTime: 2022-07-31 16:04:19
  */
 const express = require('express')
 const app = express()
@@ -43,6 +43,9 @@ app.use('/file',fileProcessRouter)
 const getListRouter = require('./router/list.js')
 app.use('/blog',getListRouter)
 
+//时间轴路由
+const getTimeLine = require('./router/timeLine.js')
+app.use('/blog',getTimeLine)
 
 //数据验证
 const joi = require('joi')
