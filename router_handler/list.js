@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-07-29 22:19:15
  * @LastEditors: likeorange
- * @LastEditTime: 2022-07-30 20:39:48
+ * @LastEditTime: 2022-08-02 00:40:24
  */
 
 var async = require('async')
@@ -12,9 +12,9 @@ const db = require('../db/index.js')
 exports.getList = (req, res) => {
   // console.log(req.query);
   let total = 0
-  let sql = `select article.id,user_id,content,category_id,name,create_time,update_time,article_hot from article limit ?,?`
+  let sql = `select article.id,user_id,username,content,category_id,name,create_time,update_time,article_hot from article limit ?,?`
   if (req.query.userId) {
-    sql = `select article.id,user_id,content,category_id,name,create_time,update_time,article_hot from article where article.user_id = ${req.query.userId} limit ?,?`
+    sql = `select article.id,user_id,username,content,category_id,name,create_time,update_time,article_hot from article where article.user_id = ${req.query.userId} limit ?,?`
   }
   db.query(sql, [parseInt((req.query.page - 1) * req.query.pageSize), parseInt(req.query.pageSize)], (err, rows) => {
     if (err) {
@@ -30,7 +30,8 @@ exports.getList = (req, res) => {
       }
       db.query(sqlTag, item.id, (err, tags) => {
         if (err) return res.send({ code: 0, msg: '服务器端错误' });
-        item.tags = tags[0]
+        const json = JSON.parse(JSON.stringify(tags[0]).replace(/tag_name/g,"tagName"))
+        item.tags = json
         total = tags[1][0].total
         callback(null, item)
       });

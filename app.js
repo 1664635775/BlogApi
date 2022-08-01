@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-07-25 20:50:01
  * @LastEditors: likeorange
- * @LastEditTime: 2022-07-31 16:04:19
+ * @LastEditTime: 2022-08-01 21:42:00
  */
 const express = require('express')
 const app = express()
@@ -47,6 +47,10 @@ app.use('/blog',getListRouter)
 const getTimeLine = require('./router/timeLine.js')
 app.use('/blog',getTimeLine)
 
+//分类路由
+const getCategory = require('./router/category.js')
+app.use('/category',getCategory)
+
 //数据验证
 const joi = require('joi')
 // 错误中间件
@@ -56,7 +60,7 @@ app.use(function (err, req, res, next) {
   // 未知错误
   // console.log(req.body);
   // console.log(err);
-  res.send({code:0,msg:err.message})
+  return res.send({code:0,msg:err.message})
 })
 
 

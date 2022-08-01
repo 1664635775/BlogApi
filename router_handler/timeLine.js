@@ -4,13 +4,13 @@
  * @Author: likeorange
  * @Date: 2022-07-31 15:56:11
  * @LastEditors: likeorange
- * @LastEditTime: 2022-07-31 16:39:41
+ * @LastEditTime: 2022-08-01 21:19:29
  */
 
 const db = require('../db/index.js')
 const async = require('async')
 exports.getTimeLine = (req, res) => {
-  const sql = `select article.id,user_id,content,category_id,name,create_time,update_time,article_hot from article where article.user_id = ${req.query.userId}`
+  const sql = `select article.id,username,user_id,content,category_id,name,create_time,update_time,article_hot from article where article.user_id = ${req.query.userId}`
   db.query(sql, (err, rows) => {
     if (err) return res.send(err)
     if(rows.length == 0) return res.send({code:1})

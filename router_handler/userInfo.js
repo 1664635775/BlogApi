@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-07-26 16:14:35
  * @LastEditors: likeorange
- * @LastEditTime: 2022-07-30 22:33:04
+ * @LastEditTime: 2022-08-02 00:43:25
  */
 const db = require('../db/index')
 var async = require('async')
@@ -19,14 +19,18 @@ exports.getUserInfo = (req, res) => {
     delete results[0][0].is_disable
     results[0][0].createTime = results[0][0].create_time
     delete results[0][0].create_time
+
     async.map(results[2], (item, callback) => {
       const sqlFollow = `select * from user where user.id = ${item.id}; select count(*) total from article where article.user_id = ${item.id};`
       db.query(sqlFollow, (err, msg) => {
         if (err) return res.send(err)
-        delete msg[0][0].password
-        delete msg[0][0].is_admin
-        delete msg[0][0].is_disable
-        item = { ...msg[0][0] }
+        //msg[0]判断用户是否存在
+        if (msg[0].length != 0) {
+          delete msg[0][0].password
+          delete msg[0][0].is_admin
+          delete msg[0][0].is_disable
+          item = { ...msg[0][0] }
+        }
         callback(null, item)
       })
     }, function (err, end) {
