@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-07-31 15:56:11
  * @LastEditors: likeorange
- * @LastEditTime: 2022-08-01 21:19:29
+ * @LastEditTime: 2022-08-02 17:39:35
  */
 
 const db = require('../db/index.js')
@@ -35,7 +35,7 @@ exports.getTimeLine = (req, res) => {
         data.updateTime = data.update_time
         delete data.update_time
       }
-      return res.send({ code: 1, data: { records: results } })
+      return res.send({ code: 1, data: { ...results } })
     }
     )
   })
