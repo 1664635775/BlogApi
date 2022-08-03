@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-07-25 20:50:01
  * @LastEditors: likeorange
- * @LastEditTime: 2022-08-03 16:05:50
+ * @LastEditTime: 2022-08-03 16:52:19
  */
 const express = require('express')
 const app = express()
@@ -54,6 +54,10 @@ app.use('/category',getCategory)
 //关注路由
 const follow = require('./router/follow.js')
 app.use('/follow',follow)
+
+//评论路由
+const comment = require('./router/comment.js')
+app.use('/comment',comment)
 
 //数据验证
 const joi = require('joi')

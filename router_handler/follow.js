@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-08-02 22:10:09
  * @LastEditors: likeorange
- * @LastEditTime: 2022-08-03 16:38:12
+ * @LastEditTime: 2022-08-03 17:30:18
  */
 const db = require('../db/index.js')
 const async = require('async')
@@ -38,7 +38,6 @@ exports.getFollowList = (req, res) => {
 }
 
 exports.addFollow = (req, res) => {
-  console.log(req.params);
   const snid = new SnowflakeID({
     mid: +new Date()
   });
