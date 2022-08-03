@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-07-25 20:50:01
  * @LastEditors: likeorange
- * @LastEditTime: 2022-07-30 13:23:56
+ * @LastEditTime: 2022-08-03 23:05:55
  */
 
 
@@ -17,6 +17,7 @@ const db = mysql.createPool({
   password: config.password,
   database: config.database,
   dateStrings: true,//<-  强制日期类型(TIMESTAMP, DATETIME, DATE)以字符串返回
+  connectionLimit:20,
   multipleStatements: true
 })
 
