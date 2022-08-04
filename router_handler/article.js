@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-08-03 17:48:02
  * @LastEditors: likeorange
- * @LastEditTime: 2022-08-04 00:47:33
+ * @LastEditTime: 2022-08-04 17:18:35
  */
 const async = require('async')
 const SnowflakeID = require('../utils/SnowflakeID.js')
@@ -58,13 +58,63 @@ exports.addArticle = (req, res) => {
         })
       }
     },function (err,results) {
-      return res.send({data:'创建成功'})
+      return res.send({code:1,msg:'发布成功'})
     })
   })
 }
 exports.updateArticle = (req, res) => {
-
+  const date = moment(new Date()).format("YYYY-MM-DD HH:ss:mm")
+  const sqlInsert = `update article set ? where article.id = ${req.body.id};select * from tags;delete from article_tags where article_tags.article_id =${req.body.id};`
+  db.query(sqlInsert, {category_id: req.body.categoryId, name: req.body.name, content: req.body.content, update_time: date }, function (err, rows) {
+    if (err) {
+      return res.send(err)
+    }
+    async.map(req.body.tagsName,(tag,callback)=>{
+      let judge = rows[1].find(row => {
+        return row.tag_name == tag
+      })
+      console.log(judge);
+      if (judge == undefined) {
+        const sqltag = `insert into tags set ?;insert into article_tags set ?`
+        let tagid0 = new SnowflakeID({
+          mid: +new Date()
+        });
+        let tagid = tagid0.generate();
+        let connectId0 = new SnowflakeID({
+          mid: +new Date()
+        });
+        let connectId = connectId0.generate();
+        console.log('1111');
+        db.query(sqltag, [{ id: tagid, tag_name: tag }, { id: connectId, article_id: req.body.id, tag_id: tagid }], (err, end) => {
+          if (err) return err
+          console.log('cheak11111');
+          callback(null,tag)
+        })
+      }
+      else {
+        console.log('2222');
+        let sqltag = `insert into article_tags set ?`
+        let connectId0 = new SnowflakeID({
+          mid: +new Date()
+        });
+        let connectId = connectId0.generate();
+        db.query(sqltag, [{ id: connectId, article_id: req.body.id, tag_id: judge.id }], (err, end) => {
+          if (err) return err
+          console.log('cheak22222');
+          callback(null,tag)
+        })
+      }
+    },function (err,results) {
+      return res.send({code:1,msg:'修改成功'})
+    })
+  })
 }
 exports.removeArticle = (req, res) => {
-
+  const sql = `delete from article_tags where article_tags.article_id =${req.query.articleId};delete from article where article.id =${req.query.articleId}`
+  db.query(sql, function (err, results) {
+    if (err) {
+      return res.send(err)
+    }
+    return res.send({code:1,msg:'删除成功'})
+  })
 }
