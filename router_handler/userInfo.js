@@ -4,10 +4,13 @@
  * @Author: likeorange
  * @Date: 2022-07-26 16:14:35
  * @LastEditors: likeorange
- * @LastEditTime: 2022-08-02 17:34:06
+ * @LastEditTime: 2022-08-04 17:39:44
  */
 const db = require('../db/index')
-var async = require('async')
+let async = require('async')
+//加盐加密
+const bcrypt = require('bcryptjs')
+
 exports.getUserInfo = (req, res) => {
   const sql = `select * from user where user.id = ${req.query.userId}; select count(*) total from article where article.user_id = ${req.query.userId}; select guest_id id from follow where follow.host_id =${req.query.userId}`
   db.query(sql, (err, results) => {
@@ -39,5 +42,14 @@ exports.getUserInfo = (req, res) => {
       return res.send({ code: 1, data: { ...results[0][0], articleNum: results[1][0].total, followedUser: end } })
     }
     )
+  })
+}
+exports.updateUserInfo = (req,res) =>{
+  console.log(req.session.userInfo);
+  let pwd = bcrypt.hashSync(req.body.password, 10)
+  const sql = `update user set ? where user.id = ${req.session.userInfo.id}`
+  db.query(sql,[{username:req.body.username,password:pwd,icon:req.body.icon}],(err,results) =>{
+    if(err) return res.send(err)
+    return res.send({"code":1,"msg":"修改成功，请重新登录！"})
   })
 }

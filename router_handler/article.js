@@ -4,7 +4,7 @@
  * @Author: likeorange
  * @Date: 2022-08-03 17:48:02
  * @LastEditors: likeorange
- * @LastEditTime: 2022-08-04 17:18:35
+ * @LastEditTime: 2022-08-04 18:15:13
  */
 const async = require('async')
 const SnowflakeID = require('../utils/SnowflakeID.js')
@@ -22,7 +22,7 @@ exports.addArticle = (req, res) => {
     if (err) {
       return res.send(err)
     }
-    async.map(req.body.tagsName,(tag,callback)=>{
+    async.map(req.body.tagsName, (tag, callback) => {
       let judge = rows[1].find(row => {
         return row.tag_name == tag
       })
@@ -41,7 +41,7 @@ exports.addArticle = (req, res) => {
         db.query(sqltag, [{ id: tagid, tag_name: tag }, { id: connectId, article_id: id, tag_id: tagid }], (err, end) => {
           if (err) return err
           console.log('cheak11111');
-          callback(null,tag)
+          callback(null, tag)
         })
       }
       else {
@@ -54,22 +54,22 @@ exports.addArticle = (req, res) => {
         db.query(sqltag, [{ id: connectId, article_id: id, tag_id: judge.id }], (err, end) => {
           if (err) return err
           console.log('cheak22222');
-          callback(null,tag)
+          callback(null, tag)
         })
       }
-    },function (err,results) {
-      return res.send({code:1,msg:'发布成功'})
+    }, function (err, results) {
+      return res.send({ code: 1, msg: '发布成功' })
     })
   })
 }
 exports.updateArticle = (req, res) => {
   const date = moment(new Date()).format("YYYY-MM-DD HH:ss:mm")
   const sqlInsert = `update article set ? where article.id = ${req.body.id};select * from tags;delete from article_tags where article_tags.article_id =${req.body.id};`
-  db.query(sqlInsert, {category_id: req.body.categoryId, name: req.body.name, content: req.body.content, update_time: date }, function (err, rows) {
+  db.query(sqlInsert, { category_id: req.body.categoryId, name: req.body.name, content: req.body.content, update_time: date }, function (err, rows) {
     if (err) {
       return res.send(err)
     }
-    async.map(req.body.tagsName,(tag,callback)=>{
+    async.map(req.body.tagsName, (tag, callback) => {
       let judge = rows[1].find(row => {
         return row.tag_name == tag
       })
@@ -88,7 +88,7 @@ exports.updateArticle = (req, res) => {
         db.query(sqltag, [{ id: tagid, tag_name: tag }, { id: connectId, article_id: req.body.id, tag_id: tagid }], (err, end) => {
           if (err) return err
           console.log('cheak11111');
-          callback(null,tag)
+          callback(null, tag)
         })
       }
       else {
@@ -101,11 +101,11 @@ exports.updateArticle = (req, res) => {
         db.query(sqltag, [{ id: connectId, article_id: req.body.id, tag_id: judge.id }], (err, end) => {
           if (err) return err
           console.log('cheak22222');
-          callback(null,tag)
+          callback(null, tag)
         })
       }
-    },function (err,results) {
-      return res.send({code:1,msg:'修改成功'})
+    }, function (err, results) {
+      return res.send({ code: 1, msg: '修改成功' })
     })
   })
 }
@@ -115,6 +115,39 @@ exports.removeArticle = (req, res) => {
     if (err) {
       return res.send(err)
     }
-    return res.send({code:1,msg:'删除成功'})
+    return res.send({ code: 1, msg: '删除成功' })
+  })
+}
+
+exports.searchArticle = (req, res) => {
+  let keys = req.query.keywords.split(' ')
+  let search = ''
+  for(let i in keys){
+    if(i == 0){
+      search += `article.content like "%${keys[i]}%"`
+    }
+    else{
+      search += ` or article.content like "%${keys[i]}%"`
+    }
+  }
+  console.log(search);
+  let sql = `SELECT * FROM article WHERE ${search};`
+  db.query(sql,(err,results) =>{
+    if(err) return res.send(err)
+    for (let data of results) {
+      delete data.is_delete
+      delete data.available
+      data.articleHot = data.article_hot
+      delete data.article_hot
+      data.userId = data.user_id
+      delete data.user_id
+      data.categoryId = data.category_id
+      delete data.category_id
+      data.createTime = data.create_time
+      delete data.create_time
+      data.updateTime = data.update_time
+      delete data.update_time
+    }
+    return res.send({code:1,msg:'搜索成功',data:results})
   })
 }
